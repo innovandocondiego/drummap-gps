@@ -1,25 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>DRUMMAP - Sistema GPS para Minas</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRUMMAP</title>
   <style>
-    body {
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+    }
+    #map {
+      height: calc(100% - 50px);
+      width: 100%;
+    }
+    header {
+      background-color: #03A9F4;
+      color: white;
       text-align: center;
-      margin-top: 100px;
+      font-size: 24px;
+      padding: 10px;
+      position: relative;
     }
-    h1 {
-      color: #2b2b2b;
+    header img {
+      position: absolute;
+      left: 10px;
+      top: 5px;
+      height: 40px;
     }
-    p {
-      font-size: 18px;
+    .controls {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px;
+    }
+    .controls button {
+      background-color: #03A9F4;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .controls button:hover {
+      background-color: #0288D1;
     }
   </style>
 </head>
 <body>
-  <h1>Bienvenido a <strong>DRUMMAP</strong></h1>
-  <p>Plataforma de geolocalización para minas a cielo abierto</p>
+  <header>
+    <img src="logo.png" alt="Logo DRUMMAP" />
+    DRUMMAP
+  </header>
+
+  <div id="map"></div>
+
+  <div class="controls">
+    <button onclick="addCurrentLocation()">📍 Agregar punto desde ubicación</button>
+    <button onclick="buscarPunto()">🔍 Buscar punto</button>
+    <button onclick="trazarRuta()">🧭 Trazar ruta</button>
+    <button onclick="activarEmergencia()">🚨 Activar emergencia</button>
+  </div>
+
+  <script>
+    let map;
+    let marcadorUsuario = null;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 10.4631, lng: -73.2532 }, // Puedes actualizar según tu zona
+        zoom: 14,
+      });
+
+      // Detectar y centrar la ubicación actual
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            map.setCenter(pos);
+            marcadorUsuario = new google.maps.Marker({
+              position: pos,
+              map,
+              title: "Estás aquí",
+            });
+          },
+          () => {
+            alert("No se pudo obtener la ubicación.");
+          }
+        );
+      } else {
+        alert("Tu navegador no soporta geolocalización.");
+      }
+    }
+
+    function addCurrentLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          new google.maps.Marker({
+            position: pos,
+            map,
+            title: "Nuevo punto",
+          });
+        });
+      }
+    }
+
+    function buscarPunto() {
+      const lugar = prompt("Ingresa un lugar o coordenadas:");
+      if (lugar) {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address: lugar }, (results, status) => {
+          if (status === "OK") {
+            map.setCenter(results[0].geometry.location);
+            new google.maps.Marker({
+              map,
+              position: results[0].geometry.location,
+              title: lugar,
+            });
+          } else {
+            alert("No se pudo encontrar el lugar: " + status);
+          }
+        });
+      }
+    }
+
+    function trazarRuta() {
+      alert("Funcionalidad en desarrollo. Muy pronto disponible.");
+    }
+
+    function activarEmergencia() {
+      const mailto = "mailto:reportecamionesturno1.dltd@gmail.com?subject=🚨%20Alerta%20DRUMMAP&body=Se%20ha%20activado%20una%20emergencia%20desde%20la%20aplicación%20DRUMMAP.";
+      window.location.href = mailto;
+    }
+  </script>
+
+  <!-- ✅ Reemplaza TU_API_KEY con tu clave válida -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?AIzaSyDGUrdfliMotdntjXe_YcIkK7x0JDes3V0&callback=initMap&libraries=places&loading=async">
+  </script>
 </body>
 </html>

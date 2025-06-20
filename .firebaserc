@@ -1,5 +1,6 @@
 {
   "projects": {
+    "default": "drummap-gps",
     "gps": "drummap-gps"
   },
   "targets": {},

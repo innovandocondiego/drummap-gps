@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+header {
+  background-color: #03a9f4;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+}
+header button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: none;
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+#map {
+  height: 80vh;
+  width: 100%;
+  background: #ccc;
+}
+.botones {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.botones button {
+  background-color: #03a9f4;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.botones button:hover {
+  background-color: #0288d1;
+}
